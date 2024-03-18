@@ -1,0 +1,125 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="hero">
+    <div class="hero-slide">
+      <div
+        class="img overlay"
+        style="background-image: url('/static/images/hero_bg_3.jpg')"
+      ></div>
+      <div
+        class="img overlay"
+        style="background-image: url('/static/images/hero_bg_2.jpg')"
+      ></div>
+      <div
+        class="img overlay"
+        style="background-image: url('/static/images/hero_bg_1.jpg')"
+      ></div>
+    </div>
+
+    <div class="container">
+      <div class="row justify-content-center align-items-center">
+        <div class="col-lg-9 text-center">
+          <h1 class="heading" data-aos="fade-up">
+              Select Features
+          </h1>
+          <!-- <form
+            action="#"
+            class="narrow-w form-search d-flex align-items-stretch mb-3"
+            data-aos="fade-up"
+            data-aos-delay="200"
+          >
+            <input
+              type="text"
+              class="form-control px-6"
+              placeholder="Your ZIP code or City. e.g. New York"
+            />
+            <button type="submit" class="btn btn-primary">Search</button>
+          </form> -->
+            <div class="alert alert-primary">
+                <!-- <h1>Search Results</h1> -->
+                <table class="table table-sriped table-hover" border="1">
+                    <tr>
+                        <th>Flat Name</th>
+                        <th>Price</th>
+                        <th>Bedrooms</th>
+                        <th>Bathrooms.</th>
+                        <!-- Add other relevant flat details here... -->
+                    </tr>
+                    {% for result in results %}
+                        <tr>
+                            <td>{{ result.FlatName }}</td>
+                            <td>{{ result.Price }}</td>
+                            <td>{{ result.Bedrooms }}</td>
+                            <td>{{ result.Bathrooms }}</td>
+                            <td>{{ result.Latitude }}</td>
+                            <td>{{ result.Longitude }}</td>
+                            <!-- Add other relevant flat details here... -->
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="container">
+    <div class="row justify-content-center align-items-center">
+      <div class="col-lg-9 text-center">
+
+
+            <!-- Include Leaflet CSS and JS -->
+            <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+            <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+            <!-- Set the size of the map container -->
+            <style>
+                #map {
+                    height: 400px;
+                    width: 100%;
+                }
+            </style>
+ 
+            <!-- Create a div element to hold the map -->
+            <div id="map"></div>
+        
+            <script>
+
+              {% if results %}
+                // Initialize and add the map
+                var map = L.map('map').setView([{{results[0].Latitude}}, {{results[0].Longitude}}], 10); // Set the initial center and zoom level
+        
+                // Add the OpenStreetMap tile layer
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(map);
+        
+                // Define the marker positions
+                var markerPositions = [
+                {% for result in results %}
+                    { lat: {{ result.Latitude }}, lng: {{ result.Longitude }} }, // New York City
+      
+                {% endfor %}
+                ];
+        
+                // Add markers to the map
+                markerPositions.forEach(position => {
+                    L.marker([position.lat, position.lng]).addTo(map);
+                });
+
+            {% endif %}
+            </script>
+                
+    </div>
+  </div>
+</div>
+    
+{% endblock %}
+
+
+
